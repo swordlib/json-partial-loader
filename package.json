@@ -1,18 +1,12 @@
 {
   "name": "json-partial-loader",
-  "version": "0.1.0",
-  "author": "wuyupeng",
-  "description": "json partial loader module for webpack",
+  "version": "0.0.1",
+  "author": "fallenleavesguy",
+  "description": "json partial loader module for webpack 4",
   "license": "MIT",
-  "scripts": {
-    "release": "standard-version"
-  },
-  "devDependencies": {
-    "standard-version": "^4.2.0"
-  },
   "repository": {
     "type": "git",
-    "url": "http://192.168.0.20/wuyupeng/json-partial-loader.git"
+    "url": "https://github.com/swordlib/json-partial-loader.git"
   },
   "dependencies": {
     "loader-utils": "^1.1.0"
