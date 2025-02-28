@@ -22,3 +22,4 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 pnpm-lock.yaml
+/demo
