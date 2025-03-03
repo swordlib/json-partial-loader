@@ -1,6 +1,6 @@
 {
   "name": "@swordlib/json-partial-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "fallenleavesguy",
   "description": "json partial loader module for webpack 4",
   "license": "MIT",
