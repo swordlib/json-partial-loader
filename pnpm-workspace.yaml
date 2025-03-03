@@ -1,0 +1,4 @@
+packages:
+  - '.'
+  - 'demo/webpack4'
+  - 'demo/webpack5' 

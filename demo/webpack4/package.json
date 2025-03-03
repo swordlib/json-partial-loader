@@ -1,0 +1,15 @@
+{
+  "name": "json-partial-loader-demo-webpack4",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack && node dist/bundle.js"
+  },
+  "dependencies": {
+    "@swordlib/json-partial-loader": "workspace:*"
+  },
+  "devDependencies": {
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.2"
+  }
+} 

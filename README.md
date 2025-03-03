@@ -1,4 +1,4 @@
-一个 Webpack loader，用于从 JSON 文件中按键名选择性地导入部分内容。
+一个 Webpack loader，用于从 JSON 文件中按键名选择性地导入部分内容。同时支持 Webpack 4 和 Webpack 5。
 
 ## 功能介绍
 
@@ -7,11 +7,19 @@ JSON Key Loader 允许你只导入 JSON 文件中的特定部分，而不是整�
 ## 安装
 
 ```bash
-npm install --save-dev json-partial-loader
+# 使用 npm
+npm install --save-dev @swordlib/json-partial-loader
+
+# 使用 yarn
+yarn add --dev @swordlib/json-partial-loader
+
+# 使用 pnpm
+pnpm add -D @swordlib/json-partial-loader
+```
 
 ## Webpack 配置
 
-webpack 配置:
+### Webpack 5 配置
 
 ```javascript
 const path = require('path');
@@ -27,10 +35,40 @@ module.exports = {
     rules: [
       {
         test: /\.json$/,
-        resourceQuery: /key=.+/,  // 匹配带有 key[]= 参数的请求
+        resourceQuery: /key=.+/,  // 匹配带有 key= 参数的请求
+        type: 'javascript/auto',  // 防止webpack默认的json loader处理
         use: [
           {
-            loader: require('json-partial-loader'),
+            loader: '@swordlib/json-partial-loader',
+            // 这里不需要指定options，因为我们会从resourceQuery中获取
+          }
+        ]
+      }
+    ]
+  },
+}; 
+```
+
+### Webpack 4 配置
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  mode: 'development',
+  entry: './index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.json$/,
+        resourceQuery: /key=.+/,  // 匹配带有 key= 参数的请求
+        use: [
+          {
+            loader: '@swordlib/json-partial-loader',
             // 这里不需要指定options，因为我们会从resourceQuery中获取
           }
         ],
