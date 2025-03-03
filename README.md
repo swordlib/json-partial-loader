@@ -1,4 +1,3 @@
-
 一个 Webpack loader，用于从 JSON 文件中按键名选择性地导入部分内容。
 
 ## 功能介绍
@@ -103,3 +102,31 @@ console.log('元数据:', metaData); // {version: "1.0.0", lastUpdated: "2023-01
 
 - 确保查询参数中的键名存在于 JSON 文件中，否则将得到 `undefined`
 - 此 loader 适用于一级键的提取，不支持深层嵌套路径（如 `user.profile.name`）
+
+## 测试
+
+本项目使用 Vitest 进行单元测试。测试覆盖了多种场景：
+
+- 处理没有查询参数的情况
+- 根据查询参数提取特定字段
+- 处理嵌套的 JSON 对象
+- 处理非字符串的输入（已经是对象的情况）
+- 处理不存在的键名
+- 处理数组类型的 JSON
+- 处理包含特殊字符的 JSON
+
+运行测试：
+
+```bash
+# 安装依赖
+npm install
+
+# 运行测试
+npm test
+```
+
+你也可以通过以下命令运行测试监视模式：
+
+```bash
+npm run test:watch
+```

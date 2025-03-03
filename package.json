@@ -8,7 +8,14 @@
     "type": "git",
     "url": "https://github.com/swordlib/json-partial-loader.git"
   },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "dependencies": {
     "loader-utils": "^1.1.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.7"
   }
 }
