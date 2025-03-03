@@ -11,7 +11,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "demo": "cd demo && pnpm start"
+    "demo": "cd demo && pnpm start",
+    "publish": "npm publish --registry=https://registry.npmjs.org --access public"
   },
   "dependencies": {
     "loader-utils": "^1.1.0"
