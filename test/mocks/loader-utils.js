@@ -9,8 +9,13 @@ module.exports = {
     
     for (const part of parts) {
       if (!part) continue;
+      
+      // 分割键值对
       const [key, value] = part.split('=');
-      result[key] = value;
+      
+      // 存储键值对，保持value原样，不对逗号做特殊处理
+      // loader会自己处理逗号分隔的情况
+      result[key] = value || '';
     }
     
     return result;

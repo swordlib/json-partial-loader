@@ -2,9 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // 使用require导入CommonJS模块
 const loader = require('../index.js');
 
-// 模拟loader-utils
-vi.mock('loader-utils', () => require('./mocks/loader-utils.js'));
-
 // 模拟loader上下文
 const createLoaderContext = (resourceQuery = '') => ({
   resourceQuery,
@@ -130,5 +127,108 @@ describe('json-partial-loader', () => {
     
     // 验证返回的内容是否为指定字段并保留特殊字符
     expect(result).toBe(`module.exports = "包含中文和特殊符号!@#$%^&*()"`);
+  });
+
+  it('应该能通过逗号分隔处理多个键', () => {
+    // 设置多个键名的查询参数
+    loaderContext = createLoaderContext('?key=a,c');
+    
+    // 模拟JSON输入
+    const source = JSON.stringify({ a: 1, b: 2, c: 3, d: 4 });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 验证返回的内容是否直接包含多个字段的值（合并模式）
+    expect(result).toBe(`module.exports = {"a":1,"c":3}`);
+  });
+
+  it('应该在多键处理中忽略不存在的键', () => {
+    // 设置包含不存在键的查询参数
+    loaderContext = createLoaderContext('?key=a,nonexistent,c');
+    
+    // 模拟JSON输入
+    const source = JSON.stringify({ a: 1, b: 2, c: 3 });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 验证返回的内容是否只包含存在的键的值
+    expect(result).toBe(`module.exports = {"a":1,"c":3}`);
+  });
+
+  it('应该能处理复杂对象的多键提取并合并属性', () => {
+    // 设置多个键名的查询参数
+    loaderContext = createLoaderContext('?key=user,settings');
+    
+    // 模拟复杂JSON输入
+    const source = JSON.stringify({
+      user: { name: "张三", age: 30 },
+      product: { id: "p001", name: "示例产品" },
+      settings: { theme: "dark", notifications: true }
+    });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 验证返回的内容是否将多个对象的属性合并到一个对象中
+    expect(result).toBe(`module.exports = {"name":"张三","age":30,"theme":"dark","notifications":true}`);
+  });
+
+  it('应该处理有空格的多键情况', () => {
+    // 设置带空格的多键查询参数
+    loaderContext = createLoaderContext('?key=a, c, d');
+    
+    // 模拟JSON输入
+    const source = JSON.stringify({ a: 1, b: 2, c: 3, d: 4 });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 验证返回的内容是否正确处理并忽略空格
+    expect(result).toBe(`module.exports = {"a":1,"c":3,"d":4}`);
+  });
+
+  it('应该处理空键名列表', () => {
+    // 设置空的键名列表
+    loaderContext = createLoaderContext('?key=,,,');
+    
+    // 模拟JSON输入
+    const source = JSON.stringify({ a: 1, b: 2 });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 验证返回的内容是否为空对象
+    expect(result).toBe(`module.exports = {}`);
+  });
+
+  it('应该处理混合类型的多键合并', () => {
+    // 设置混合类型的多键查询参数
+    loaderContext = createLoaderContext('?key=a,obj');
+    
+    // 模拟混合类型的JSON输入
+    const source = JSON.stringify({ 
+      a: 1, 
+      b: 2, 
+      obj: { 
+        x: 10, 
+        y: 20 
+      } 
+    });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 解析结果对象
+    const moduleExportsMatch = result.match(/module\.exports = (.*)/);
+    const exportedObj = JSON.parse(moduleExportsMatch[1]);
+    
+    // 验证返回的对象包含正确的属性和值
+    expect(exportedObj).toEqual({
+      a: 1,
+      x: 10,
+      y: 20
+    });
   });
 }); 
