@@ -1,0 +1,73 @@
+{
+  "user": {
+    "name": "张三",
+    "age": 28,
+    "email": "zhangsan@example.com",
+    "address": {
+      "city": "北京",
+      "district": "海淀区",
+      "street": "中关村大街1号"
+    },
+    "preferences": {
+      "notifications": {
+        "email": true,
+        "sms": false
+      }
+    }
+  },
+  "product": {
+    "id": "p001",
+    "name": "高性能笔记本电脑",
+    "price": 8999,
+    "specs": {
+      "cpu": "Intel i9",
+      "memory": "32GB",
+      "storage": {
+        "type": "SSD",
+        "capacity": "1TB"
+      }
+    }
+  },
+  "settings": {
+    "theme": "dark",
+    "language": "zh-CN",
+    "notifications": true,
+    "display": {
+      "colorMode": "dark",
+      "fontSize": "medium",
+      "layout": {
+        "sidebar": "left",
+        "menuStyle": "collapsed"
+      }
+    }
+  },
+  "metadata": {
+    "createdAt": "2023-01-01",
+    "updatedAt": "2023-07-15",
+    "version": "1.0.0",
+    "history": {
+      "previousVersion": "0.9.0",
+      "changes": {
+        "major": 1,
+        "minor": 0,
+        "patch": 0
+      }
+    }
+  },
+  "additionalUser": {
+    "name": "李四",
+    "age": 32,
+    "address": {
+      "city": "上海",
+      "district": "浦东新区",
+      "zipcode": "200120"
+    },
+    "preferences": {
+      "notifications": {
+        "email": false,
+        "sms": true,
+        "app": true
+      }
+    }
+  }
+} 

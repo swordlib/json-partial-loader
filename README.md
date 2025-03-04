@@ -3,7 +3,7 @@
 ## 功能介绍
 
 用于减小多页面项目中，减少不必要的文件大小。如可以把多语言统一放在一个json文件中，然后根据页面选择性的导入。
-json-partial-loader允许你只导入 JSON 文件中的特定部分，而不是整个 JSON 对象。通过在导入语句中使用查询参数 `?key=xxx` 或 `?key=xxx,yyy,zzz`，你可以只提取 JSON 中对应键名的值, 多个key对象会合并到一个对象。
+json-partial-loader允许你只导入 JSON 文件中的特定部分，而不是整个 JSON 对象。通过在导入语句中使用查询参数 `?key=xxx` 或 `?key=xxx,yyy,zzz`，你可以只提取 JSON 中对应键名的值, 多个key对象会深度合并到一个对象。
 
 ## 安装
 
@@ -123,7 +123,7 @@ console.log('元数据:', metaData); // {version: "1.0.0", lastUpdated: "2023-01
 
 ### 多键导入
 
-你也可以通过逗号分隔的方式一次性导入多个键对应的值。当使用多键导入时，所有指定键对应对象的属性会被合并到一个对象中：
+你也可以通过逗号分隔的方式一次性导入多个键对应的值。当使用多键导入时，所有指定键对应对象的属性会被深度合并到一个对象中：
 
 ```javascript
 // 同时导入用户信息和应用设置，合并它们的属性
@@ -158,13 +158,55 @@ import allData from './data.json?key=user,product,settings';
 // }
 ```
 
+### 深度合并
+
+当导入多个包含嵌套对象的键时，loader 会使用 `lodash.merge` 进行深度合并:
+
+```javascript
+// 假设 data.json 包含以下内容:
+// {
+//   "user": {
+//     "name": "张三",
+//     "profile": {
+//       "address": {
+//         "city": "北京",
+//         "district": "海淀区"
+//       }
+//     }
+//   },
+//   "additionalUser": {
+//     "name": "李四",
+//     "profile": {
+//       "address": {
+//         "district": "朝阳区",
+//         "street": "建国路"
+//       }
+//     }
+//   }
+// }
+
+import mergedUser from './data.json?key=user,additionalUser';
+
+console.log(mergedUser);
+// 输出: {
+//   name: "李四",  // 注意这里使用了后面对象的值
+//   profile: {
+//     address: {
+//       city: "北京",
+//       district: "朝阳区",  // 注意这里使用了后面对象的值
+//       street: "建国路"     // 深层属性被保留和合并
+//     }
+//   }
+// }
+```
+
 ## 工作原理
 
 1. 当导入 JSON 文件时，loader 会解析文件内容
 2. 解析导入语句中的查询参数 `?key=xxx` 或 `?key=xxx,yyy,zzz`
 3. 从 JSON 对象中提取对应键名的值
 4. 只导出该键对应的值，而不是整个 JSON 对象
-5. 当指定多个键时，会将所有键对应对象的属性合并到一个新对象中
+5. 当指定多个键时，会使用 `lodash.merge` 将所有键对应对象的属性深度合并到一个新对象中
 
 ## 优势
 
@@ -178,6 +220,7 @@ import allData from './data.json?key=user,product,settings';
 - 确保查询参数中的键名存在于 JSON 文件中，否则将得到 `undefined`
 - 当使用多键导入时，如果某个键不存在，该键将被忽略
 - 当使用多键导入时，如果不同对象有同名属性，后面的键对应的属性值会覆盖前面的
+- 在深度合并时，按照 `lodash.merge` 的行为，数组会被完全替换而不是合并，这与对象的合并行为不同
 - 此 loader 适用于一级键的提取，不支持深层嵌套路径（如 `user.profile.name`）
 
 ## 测试

@@ -1,6 +1,6 @@
 {
   "name": "@swordlib/json-partial-loader",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "fallenleavesguy",
   "description": "json partial loader module for webpack 4 and 5",
   "license": "MIT",
@@ -17,7 +17,8 @@
     "release": "npm publish --registry=https://registry.npmjs.org --access public"
   },
   "dependencies": {
-    "loader-utils": "^1.1.0"
+    "loader-utils": "^1.1.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "vitest": "^3.0.7"

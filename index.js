@@ -1,4 +1,5 @@
 const loaderUtils = require('loader-utils');
+const _ = require('lodash');
 
 module.exports = function (source) {
   if (this.cacheable) this.cacheable();
@@ -48,13 +49,13 @@ module.exports = function (source) {
   
   // 处理多个键的情况
   if (keys.length > 1) {
-    // 合并所有键对应对象的属性到一个新对象中
+    // 使用lodash的深度合并功能合并所有键对应对象的属性到一个新对象中
     moduleValue = {};
     for (const key of keys) {
       if (value[key] !== undefined) {
         if (typeof value[key] === 'object' && value[key] !== null) {
-          // 对于对象类型，合并其所有属性
-          Object.assign(moduleValue, value[key]);
+          // 对于对象类型，使用lodash的merge进行深度合并
+          _.merge(moduleValue, value[key]);
         } else {
           // 对于非对象类型，使用键名作为属性名
           moduleValue[key] = value[key];

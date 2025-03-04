@@ -231,4 +231,135 @@ describe('json-partial-loader', () => {
       y: 20
     });
   });
+
+  it('应该能深度合并嵌套对象', () => {
+    // 设置多键查询参数
+    loaderContext = createLoaderContext('?key=user1,user2');
+    
+    // 模拟带有嵌套对象的JSON输入
+    const source = JSON.stringify({ 
+      user1: {
+        name: "张三",
+        profile: {
+          age: 28,
+          address: {
+            city: "北京",
+            district: "海淀区"
+          },
+          settings: {
+            theme: "dark"
+          }
+        }
+      },
+      user2: {
+        name: "李四",
+        profile: {
+          age: 32,
+          address: {
+            district: "朝阳区",
+            street: "建国路"
+          },
+          settings: {
+            language: "zh-CN",
+            notifications: true
+          }
+        }
+      }
+    });
+    
+    // 绑定上下文并调用loader
+    const result = loader.call(loaderContext, source);
+    
+    // 解析结果对象
+    const moduleExportsMatch = result.match(/module\.exports = (.*)/);
+    const exportedObj = JSON.parse(moduleExportsMatch[1]);
+    
+    // 验证深度合并的结果
+    expect(exportedObj).toEqual({
+      name: "李四",
+      profile: {
+        age: 32,
+        address: {
+          city: "北京",
+          district: "朝阳区",
+          street: "建国路"
+        },
+        settings: {
+          theme: "dark",
+          language: "zh-CN",
+          notifications: true
+        }
+      }
+    });
+  });
+
+  it('应该在深度合并时保留数组类型', () => {
+    loaderContext = createLoaderContext('?key=obj1,obj2');
+    
+    const source = JSON.stringify({ 
+      obj1: {
+        items: [1, 2, 3],
+        nested: {
+          tags: ["a", "b", "c"]
+        }
+      },
+      obj2: {
+        items: [4, 5, 6],
+        nested: {
+          tags: ["d", "e", "f"],
+          counts: [10, 20]
+        }
+      }
+    });
+    
+    const result = loader.call(loaderContext, source);
+    
+    const moduleExportsMatch = result.match(/module\.exports = (.*)/);
+    const exportedObj = JSON.parse(moduleExportsMatch[1]);
+    
+    // 注意：根据lodash的merge行为，数组会被完全替换，而不是合并
+    expect(exportedObj).toEqual({
+      items: [4, 5, 6],
+      nested: {
+        tags: ["d", "e", "f"],
+        counts: [10, 20]
+      }
+    });
+  });
+
+  it('应该能正确合并包含null和undefined的对象', () => {
+    loaderContext = createLoaderContext('?key=obj1,obj2');
+    
+    const source = JSON.stringify({ 
+      obj1: {
+        a: null,
+        b: "value",
+        c: {
+          deep: null
+        }
+      },
+      obj2: {
+        a: "新值",
+        b: null,
+        c: {
+          deep: "深层值",
+          extra: "额外值"
+        }
+      }
+    });
+    
+    const result = loader.call(loaderContext, source);
+    
+    const moduleExportsMatch = result.match(/module\.exports = (.*)/);
+    const exportedObj = JSON.parse(moduleExportsMatch[1]);
+    
+    expect(exportedObj).toEqual({
+      a: "新值",
+      b: null,
+      c: {
+        deep: "深层值",
+        extra: "额外值"
+      }
+    });
+  });
 }); 
